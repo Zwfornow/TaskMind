@@ -1,0 +1,97 @@
+:root {
+  --background: #f7f1e8;
+  --background-deep: #efe3d5;
+  --surface: rgba(255, 250, 243, 0.85);
+  --heading: #3e2d1f;
+  --text: #59493c;
+  --muted: #7e6b5c;
+  --accent-strong: #0f766e;
+  --accent-soft: #f59e0b;
+  --line: rgba(95, 74, 58, 0.16);
+  --shadow: 0 18px 60px rgba(90, 59, 27, 0.12);
+  --font-body: 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+
+  font: 16px/1.5 var(--font-body);
+  color: var(--text);
+  background:
+    linear-gradient(180deg, rgba(255, 248, 240, 0.78), rgba(247, 241, 232, 0.94)),
+    linear-gradient(135deg, #fff8ef, #efe3d5);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background: transparent;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(62, 45, 31, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(62, 45, 31, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at center, black 48%, transparent 100%);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+strong {
+  color: var(--heading);
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  line-height: 1.05;
+}
+
+h1 {
+  font-size: clamp(2.7rem, 6vw, 4.9rem);
+  max-width: 11ch;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+@media (max-width: 720px) {
+  :root {
+    font-size: 15px;
+  }
+}
