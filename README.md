@@ -25,7 +25,14 @@
 ```bash
 npm install
 npm run dev
+npm run dev:proxy
 ```
+
+说明：
+
+- `npm run dev` 启动前端开发服务器。
+- `npm run dev:proxy` 启动本地 DeepSeek 服务端代理，默认监听 `8787`，Vite 会把 `/api/*` 转发过去。
+- DeepSeek Key 现在只应写在服务端环境变量中，不要再使用 `VITE_DEEPSEEK_API_KEY` 这类前端公开变量。
 
 构建验证：
 
@@ -36,3 +43,14 @@ npm run build
 ## 运行环境说明
 
 当前项目为了兼容本机 Node 20.15.0，已将 Vite 工具链调整为可兼容的版本。若后续升级 Node 到 20.19+ 或 22.12+，可以再评估是否升级到更新的 Vite 主版本。
+
+## 生产部署
+
+生产环境需要同时提供两部分：
+
+- Nginx 托管 `dist/` 静态文件
+- Node 代理进程负责 `/api/deepseek`
+
+完整步骤见 [DEPLOYMENT.md](/Users/zw/innovative-project/todolist/DEPLOYMENT.md)。
+Nginx 示例配置见 [nginx.todolist.conf](/Users/zw/innovative-project/todolist/nginx.todolist.conf)。
+Systemd 示例服务见 [todolist-proxy.service](/Users/zw/innovative-project/todolist/todolist-proxy.service)。

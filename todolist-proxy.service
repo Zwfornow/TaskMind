@@ -1,0 +1,15 @@
+[Unit]
+Description=Todolist DeepSeek Proxy
+After=network.target
+
+[Service]
+Type=simple
+User=~/.nvm/versions/node/v20.15.0/bin/node
+WorkingDirectory=/opt/todolist
+ExecStart=~/.nvm/versions/node/v20.15.0/bin/npm run start
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

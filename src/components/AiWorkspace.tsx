@@ -118,7 +118,7 @@ type ParsedAiResponseResult = {
   usedFallback: boolean
 }
 
-const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
+const DEEPSEEK_PROXY_API_URL = '/api/deepseek'
 const CONVERSATION_STORAGE_KEY = 'todolist-xiaozhi-conversations-v1'
 const MAX_PERSISTED_CONVERSATIONS = 20
 const MAX_PERSISTED_MESSAGES = 100
@@ -1112,8 +1112,6 @@ export function AiWorkspace({
 
   async function handleAiArrange() {
     const prompt = aiPrompt.trim()
-    const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY?.trim() ?? ''
-    const model = import.meta.env.VITE_DEEPSEEK_MODEL?.trim() ?? 'deepseek-chat'
 
     if (!prompt || isAiLoading || !activeConversation) {
       return
@@ -1123,11 +1121,6 @@ export function AiWorkspace({
     const targetConversationId = activeConversation.id
     const nextMessages = [...activeConversation.messages, userMessage]
     appendConversationMessage(targetConversationId, userMessage)
-
-    if (!apiKey) {
-      appendAssistantMessage('还没有检测到 DeepSeek API Key。请先在 .env 中填写 VITE_DEEPSEEK_API_KEY。', targetConversationId)
-      return
-    }
 
     setAiPrompt('')
     setIsAiLoading(true)
@@ -1155,14 +1148,12 @@ export function AiWorkspace({
         .filter(Boolean)
         .join(' ')
 
-      const response = await fetch(DEEPSEEK_API_URL, {
+      const response = await fetch(DEEPSEEK_PROXY_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model,
           temperature: 0.3,
           messages: [
             {
@@ -1182,7 +1173,19 @@ export function AiWorkspace({
       })
 
       if (!response.ok) {
-        throw new Error(`DeepSeek 请求失败：${response.status}`)
+        let errorMessage = `DeepSeek 请求失败：${response.status}`
+
+        try {
+          const errorPayload = (await response.json()) as { error?: string }
+
+          if (typeof errorPayload.error === 'string' && errorPayload.error.trim()) {
+            errorMessage = errorPayload.error.trim()
+          }
+        } catch {
+          // Ignore proxy error body parse failures and fall back to status text.
+        }
+
+        throw new Error(errorMessage)
       }
 
       const payload = (await response.json()) as DeepSeekResponse
